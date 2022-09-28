@@ -1,0 +1,8 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+	implementation 'com.google.guava:guava:31.1-jre'
+	implementation 'commons-codec:commons-codec:1.15'
+
+	compileOnly 'org.springframework.boot:spring-boot-starter-json'
+}

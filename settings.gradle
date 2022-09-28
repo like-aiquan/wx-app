@@ -1,0 +1,6 @@
+rootProject.name = 'wx'
+
+include 'wx-mp'
+include 'wx-common'
+include 'wx-test'
+
