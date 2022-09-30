@@ -5,4 +5,12 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'com.google.guava:guava:31.1-jre'
+
+	// support M1
+	implementation('io.netty:netty-resolver-dns-native-macos') {
+		artifact {
+			classifier = "osx-aarch_64"
+		}
+	}
 }

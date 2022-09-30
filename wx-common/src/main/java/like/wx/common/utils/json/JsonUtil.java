@@ -2,6 +2,7 @@ package like.wx.common.utils.json;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -41,5 +42,23 @@ public class JsonUtil {
 
 	public static ObjectWriter writer() {
 		return DEFAULT_WRITER;
+	}
+
+	public static <T> T read(Class<T> clazz, String src) {
+		try {
+			return reader().forType(clazz).readValue(src);
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
+
+	public static <T> String write(T obj) {
+		try {
+			return writer().writeValueAsString(obj);
+		}
+		catch (JsonProcessingException e) {
+			return "";
+		}
 	}
 }

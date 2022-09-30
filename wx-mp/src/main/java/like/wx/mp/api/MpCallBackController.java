@@ -1,8 +1,13 @@
 package like.wx.mp.api;
 
+import like.wx.common.vo.R;
+import like.wx.mp.model.DraftListForm;
 import like.wx.mp.utils.SignUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -22,4 +27,9 @@ public class MpCallBackController {
 		return echostr;
 	}
 
+	@PostMapping("/test")
+	public R test(@RequestBody DraftListForm form, @RequestParam("access_token") String accessToken) {
+		System.out.println(accessToken);
+		return R.success(form);
+	}
 }
