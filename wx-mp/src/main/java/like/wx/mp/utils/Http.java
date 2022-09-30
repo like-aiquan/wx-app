@@ -29,6 +29,9 @@ import reactor.netty.resources.ConnectionProvider;
 @Slf4j
 public class Http {
 	private static final HttpClient HTTP_CLIENT;
+	/**
+	 * TODO change it， do not use new pool，must in a common thread pool submit task
+	 */
 	private static final ScheduledExecutorService pool;
 	private static boolean logBody = true;
 
@@ -100,8 +103,8 @@ public class Http {
 	 * body not allow is a string with the escape character
 	 */
 	public static <T> String asyncPost(String baseUrl, String uri, Map<String, Object> headers, T body) {
-		// FIXME maybe reactor limit， invoke this get first result should be in a UnBlocking Thread;
-		// FIXME @{link reactor.core.publisher.BlockingSingleSubscriber.blockingGet()}
+		// TODO maybe reactor limit， invoke this get first result should be in a UnBlocking Thread;
+		// TODO @{link reactor.core.publisher.BlockingSingleSubscriber.blockingGet()}
 		CompletableFuture<String> future = CompletableFuture.supplyAsync(
 				() -> httpPost(baseUrl, uri, headers, body), pool
 		);
