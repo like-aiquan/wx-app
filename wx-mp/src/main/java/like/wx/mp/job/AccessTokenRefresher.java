@@ -9,7 +9,6 @@ import like.wx.mp.model.AccessToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 /**
  * access token 刷新器
