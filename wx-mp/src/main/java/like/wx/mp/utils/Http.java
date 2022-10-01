@@ -154,7 +154,7 @@ public class Http {
 		headers = Optional.ofNullable(headers).orElse(new HashMap<>(1));
 		Map<String, Object> finalHeaders = headers;
 		return header -> {
-			// post 请求一定要带上 "Content-Length" 否则会报错 412
+			// post 请求一定要带上 "Content-Length" 否则 某些情况下会报错
 			finalHeaders.put("Content-Length", data.getBytes().length);
 		};
 	}
