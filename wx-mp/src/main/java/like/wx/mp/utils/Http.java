@@ -131,8 +131,8 @@ public class Http {
 			}
 			return HTTP_CLIENT
 					.baseUrl(baseUrl)
+					.headers(postDefaultHeaders(data))
 					.headers(buildHeaders(headers))
-					.headers(postDefaultHeaders(headers, data))
 					.post()
 					.uri(uri)
 					.send(ByteBufFlux.fromString(Mono.just(data)))
@@ -150,12 +150,10 @@ public class Http {
 	/**
 	 * post 请求特殊的 header
 	 */
-	private static Consumer<HttpHeaders> postDefaultHeaders(Map<String, Object> headers, String data) {
-		headers = Optional.ofNullable(headers).orElse(new HashMap<>(1));
-		Map<String, Object> finalHeaders = headers;
+	private static Consumer<HttpHeaders> postDefaultHeaders(String data) {
 		return header -> {
 			// post 请求一定要带上 "Content-Length" 否则 某些情况下会报错
-			finalHeaders.put("Content-Length", data.getBytes().length);
+			header.add("Content-Length", data.getBytes().length);
 		};
 	}
 
@@ -197,12 +195,10 @@ public class Http {
 	}
 
 	private static Consumer<? super HttpHeaders> buildHeaders(Map<String, Object> headers) {
-		if (headers == null || headers.isEmpty()) {
-			headers = new HashMap<>(1);
-		}
-		headers.put("Content-Type", "application/json");
-		Map<String, Object> finalHeaders = headers;
-		return header -> finalHeaders.forEach(header::add);
+		return header -> {
+			header.add("Content-Type", "application/json");
+			Optional.ofNullable(headers).orElse(new HashMap<>(0)).forEach(header::add);
+		};
 	}
 
 	private static String asyncGet(String baseUrl, String uri, Map<String, Object> headers) {
