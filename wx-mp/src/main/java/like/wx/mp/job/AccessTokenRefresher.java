@@ -39,8 +39,6 @@ public class AccessTokenRefresher {
 				if (response.getErrcode() != null && response.getErrcode() != 0) {
 					throw new RuntimeException(response.getErrmsg());
 				}
-				WxApp.setAppAccessToken(response.getAccessToken());
-				log.info("refresh access token success!");
 				break;
 			}
 			catch (Exception e) {
@@ -59,6 +57,7 @@ public class AccessTokenRefresher {
 			refreshAccessToken();
 		}
 		else {
+			log.info("refresh access token success!");
 			WxApp.setAppAccessToken(response.getAccessToken());
 		}
 	}

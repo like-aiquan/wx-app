@@ -123,7 +123,7 @@ public class Http {
 	/**
 	 * body not allow is a string with the escape character
 	 */
-	public static <T> String httpPost(String baseUrl, String uri, Map<String, Object> headers, T body) {
+	private static <T> String httpPost(String baseUrl, String uri, Map<String, Object> headers, T body) {
 		try {
 			String data = JsonUtil.write(body);
 			if (logBody) {
@@ -178,7 +178,7 @@ public class Http {
 		return JsonUtil.read(clazz, response);
 	}
 
-	public static String get(String baseUrl, String uri, Map<String, Object> headers) {
+	private static String get(String baseUrl, String uri, Map<String, Object> headers) {
 		try {
 			return HTTP_CLIENT
 					.baseUrl(baseUrl)
