@@ -29,32 +29,34 @@ public class AuthInterceptor implements WebFilter {
 
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-		return handlerMapping.getHandler(exchange).switchIfEmpty(chain.filter(exchange)).flatMap(handlerMethod -> {
-			if (!(handlerMethod instanceof HandlerMethod)) {
-				return chain.filter(exchange);
-			}
+		return handlerMapping.getHandler(exchange)
+				.switchIfEmpty(chain.filter(exchange))
+				.flatMap(handlerMethod -> {
+					if (!(handlerMethod instanceof HandlerMethod)) {
+						return chain.filter(exchange);
+					}
 
-			HandlerMethod handler = (HandlerMethod) handlerMethod;
-			// 方法
-			AuthPermission ano = AnnotationUtils.findAnnotation(handler.getMethod(), AuthPermission.class);
-			// 类
-			if (Objects.isNull(ano)) {
-				ano = AnnotationUtils.findAnnotation(handler.getBeanType(), AuthPermission.class);
-			}
+					HandlerMethod handler = (HandlerMethod) handlerMethod;
+					// 方法
+					AuthPermission ano = AnnotationUtils.findAnnotation(handler.getMethod(), AuthPermission.class);
+					// 类
+					if (Objects.isNull(ano)) {
+						ano = AnnotationUtils.findAnnotation(handler.getBeanType(), AuthPermission.class);
+					}
 
-			if (Objects.isNull(ano) || !ano.enabled()) {
-				return chain.filter(exchange);
-			}
+					if (Objects.isNull(ano) || !ano.enabled()) {
+						return chain.filter(exchange);
+					}
 
-			// TODO token verify
-			boolean accept = this.route(ano.strategy())
-					.verify(ano.key(), exchange.getRequest().getHeaders().getFirst("TOKEN"));
+					// TODO token verify
+					boolean accept = this.route(ano.strategy())
+							.verify(ano.key(), exchange.getRequest().getHeaders().getFirst("TOKEN"));
 
-			if (accept) {
-				return chain.filter(exchange);
-			}
-			return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "FORBIDDEN"));
-		});
+					if (accept) {
+						return chain.filter(exchange);
+					}
+					return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "FORBIDDEN"));
+				});
 	}
 
 	/**
