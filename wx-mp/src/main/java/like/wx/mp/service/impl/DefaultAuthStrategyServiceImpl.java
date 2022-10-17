@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
  * @author chenaiquan
  */
 @Service
-public class AuthStrategyServiceImpl implements AuthStrategyService {
+public class DefaultAuthStrategyServiceImpl implements AuthStrategyService {
 
+	@Override
+	public boolean verify(String key, String token) {
+		return false;
+	}
 }
