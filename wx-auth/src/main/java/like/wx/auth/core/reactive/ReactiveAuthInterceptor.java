@@ -1,14 +1,10 @@
-package like.wx.mp.interceptor;
+package like.wx.auth.core.reactive;
 
 import java.util.Objects;
-import like.wx.mp.anno.AuthPermission;
-import like.wx.mp.constant.AuthStrategy;
-import like.wx.mp.service.AuthStrategyService;
-import like.wx.mp.service.impl.DefaultAuthStrategyServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import like.wx.auth.AuthPermission;
+import like.wx.auth.core.route.AuthStrategyRoute;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,12 +16,16 @@ import reactor.core.publisher.Mono;
 /**
  * @author chenaiquan
  */
-@Component
-public class AuthInterceptor implements WebFilter {
-	@Autowired
-	private RequestMappingHandlerMapping handlerMapping;
-	@Autowired
-	private DefaultAuthStrategyServiceImpl defaultAuthStrategyService;
+public class ReactiveAuthInterceptor implements WebFilter {
+	private final RequestMappingHandlerMapping handlerMapping;
+	private final AuthStrategyRoute route;
+	private final String tokenHeader;
+
+	public ReactiveAuthInterceptor(RequestMappingHandlerMapping handlerMapping, AuthStrategyRoute route, String tokenHeader) {
+		this.handlerMapping = handlerMapping;
+		this.route = route;
+		this.tokenHeader = tokenHeader;
+	}
 
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -48,28 +48,13 @@ public class AuthInterceptor implements WebFilter {
 						return chain.filter(exchange);
 					}
 
-					// TODO token verify
-					boolean accept = this.route(ano.strategy())
-							.verify(ano.key(), exchange.getRequest().getHeaders().getFirst("TOKEN"));
+					boolean accept = this.route.route(ano.strategy())
+							.verify(ano.key(), exchange.getRequest().getHeaders().getFirst(this.tokenHeader));
 
 					if (accept) {
 						return chain.filter(exchange);
 					}
 					return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "FORBIDDEN"));
 				});
-	}
-
-	/**
-	 * 校验策略路由
-	 */
-	private AuthStrategyService route(AuthStrategy strategy) {
-		switch (strategy) {
-			case A:
-			case B:
-			case C:
-			case D:
-			default:
-				return defaultAuthStrategyService;
-		}
 	}
 }

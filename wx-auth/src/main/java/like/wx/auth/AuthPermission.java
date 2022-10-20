@@ -1,12 +1,12 @@
-package like.wx.mp.anno;
+package like.wx.auth;
 
-import static like.wx.mp.constant.AuthStrategy.D;
+
+import static like.wx.auth.AuthStrategy.D;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import like.wx.mp.constant.AuthStrategy;
 
 /**
  * @author chenaiquan
@@ -19,5 +19,5 @@ public @interface AuthPermission {
 
 	String key() default "";
 
-	AuthStrategy strategy() default D;
+	int strategy() default D;
 }
